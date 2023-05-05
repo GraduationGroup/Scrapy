@@ -15,11 +15,16 @@ class FoodcrawlItem(scrapy.Item):
     locations = scrapy.Field()
     categories = scrapy.Field()
     numReviews = scrapy.Field()
+
+    isBranch = scrapy.Field()
+    createdAt = scrapy.Field()
     
     # review
     reviews = scrapy.Field()
 
     # gallery
     photos = scrapy.Field()
+
+
     
     
