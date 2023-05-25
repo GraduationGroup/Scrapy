@@ -82,7 +82,6 @@ class FoodySpider(scrapy.Spider):
       yield scrapy.Request(url = f'{category_url}/dia-diem?page={self.p}&append=true',                   
                               callback= self.parse_pages)
   
-
   def parse_pages(self, response):
     ############## PARSE CATEGORY TO GET 12 RESTAURANTS  ##############
     selector = scrapy.Selector(response)
