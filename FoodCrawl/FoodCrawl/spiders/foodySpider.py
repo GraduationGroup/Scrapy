@@ -143,7 +143,7 @@ class FoodySpider(scrapy.Spider):
                                     callback= self.parse_a_restaurant, dont_filter = True, meta={'isBranch': True})
   
   def parse_a_restaurant(self, response):
-    item = FoodcrawlItem()
+    item = FoodyItem()
 
     item['isBranch'] = response.meta.get('isBranch')
 

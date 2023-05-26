@@ -6,14 +6,14 @@
 
 # useful for handling different item types with a single interface
 import pymongo
+from scrapy.exceptions import DropItem
 from itemadapter import ItemAdapter
-
 
 class FoodcrawlPipeline:
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
         self.mongo_db = mongo_db
-        print(mongo_db)
+        # print(mongo_db)
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -29,6 +29,11 @@ class FoodcrawlPipeline:
     def close_spider(self, spider):
         self.client.close()
 
+
     def process_item(self, item, spider):
-        self.db.data.insert_one(ItemAdapter(item).asdict())
-        return item
+        found = self.db.locations.find_one({'slug': item['slug']})
+        if found:
+            raise DropItem("🩻🩻🩻 Duplicate item found: %s" % item['slug'])  
+        else:
+            self.db.locations.insert_one(ItemAdapter(item).asdict())
+            return item

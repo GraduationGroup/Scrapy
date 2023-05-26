@@ -6,18 +6,28 @@
 import scrapy
 
 
-class FoodcrawlItem(scrapy.Item):
+class FoodyItem(scrapy.Item):
+    # id
+    slug = scrapy.Field()
+
     # define the fields for your item here like:
     name = scrapy.Field()
-    points = scrapy.Field()
-    price = scrapy.Field()
-    opening_time = scrapy.Field()
-    locations = scrapy.Field()
-    categories = scrapy.Field()
-    numReviews = scrapy.Field()
+    district = scrapy.Field()
 
-    isBranch = scrapy.Field()
-    createdAt = scrapy.Field()
+    latitude = scrapy.Field()
+    longitude = scrapy.Field()
+
+    rating = scrapy.Field()
+
+    # points = scrapy.Field()
+    # price = scrapy.Field()
+    # opening_time = scrapy.Field()
+    # locations = scrapy.Field()
+    # categories = scrapy.Field()
+    # numReviews = scrapy.Field()
+
+    # isBranch = scrapy.Field()
+    # createdAt = scrapy.Field()
     
     # review
     reviews = scrapy.Field()
