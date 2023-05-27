@@ -29,11 +29,11 @@ class FoodyItem(scrapy.Item):
     # isBranch = scrapy.Field()
     # createdAt = scrapy.Field()
     
-    # review
-    reviews = scrapy.Field()
+    # # review
+    # reviews = scrapy.Field()
 
-    # gallery
-    photos = scrapy.Field()
+    # # gallery
+    # photos = scrapy.Field()
 
 
     
