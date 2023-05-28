@@ -15,21 +15,15 @@ class FoodySpider(scrapy.Spider):
   start_urls = ['https://www.foody.vn/']
 
   custom_settings = {
-    'DOWNLOAD_DELAY': 0.5 # 0.5 seconds of delay
+    'DOWNLOAD_DELAY': 0.15 # 0.5 seconds of delay
     }
   
-  # configure_logging(install_root_handler=False)
-  # logging.basicConfig(
-  #     filename='log.txt',
-  #     format='%(levelname)s: %(message)s',
-  #     level=logging.INFO
-  # )
   
   checkpoint = True
   cp_province = 0
   cp_service = 0
-  cp_filter = 3
-  cp_page = 30
+  cp_filter = 6
+  cp_page = 1
 
   checkpoint_file = None
 
@@ -180,13 +174,13 @@ class FoodySpider(scrapy.Spider):
 
     self.filterPath = response.meta.get('filterPath') 
 
-    self.checkpoint_file = open('checkpoint.txt', 'w')
-    self.checkpoint_file.write(f'PROVINCE: {self.province_id}\nSERVICE: {self.service_id}\nFILTER: {self.filter_id}\nPAGE: {self.p}')
+    self.checkpoint_file = open('checkpoint.txt', 'w', encoding="utf-8")
+    self.checkpoint_file.write(f'PROVINCE: {self.province_id}\nSERVICE: {self.service_id}\nFILTER: {self.filterPath}\nPAGE: {self.p}')
     self.checkpoint_file.close()
 
     print("\n")                                           
     print(f'🥩PAGE: {self.p} 🍟PROVINCE: {location_name} ({self.province_id} / {len(self.provinces)}) 🍔SERVICE: {service_name} ({self.service_id} / {len(self.service_names)}) 🍙FILTER: {self.filterPath} ({self.filter_id} / {len(self.filters)})')
-    print(self.filter_url + f'&page={self.p}&append=True')
+    print(self.filter_url + f'&page={self.p}&append=True\n')
     yield scrapy.Request(url = self.filter_url + f'&page={self.p}&append=True',                  
               callback=self.parse_filter, cookies={"floc": self.provinces[self.province_id]['id']})
 
@@ -208,8 +202,8 @@ class FoodySpider(scrapy.Spider):
     
     # Lớn hơn 166 trang
     if totalResult > 12 * 166:
-      print("😊😊😊😊 Nhiều hơn 2k item")
-      # sleep(10)
+      print("🐦🐦🐦Nhiều hơn 2k item => Chia nhỏ filter")
+      sleep(1)
 
       rev_cuisines = list(self.cuisines.keys())
       rev_cuisines.reverse()
@@ -333,15 +327,16 @@ class FoodySpider(scrapy.Spider):
             # yield item
 
             if item['DetailUrl']:
-              print(self.start_urls[0][:-1] + item['DetailUrl'])
-
+              print('\t' + self.start_urls[0][:-1] + item['DetailUrl'])
+            else:
+              print( '\t' + item['Name'])
 
             yield scrapy.Request(url = 'https://www.foody.vn/__get/Restaurant/GetOpeningTime?resId=' + str(item['Id']),                  
                     callback=self.parse_opening_time, meta = {'data': item},  headers={'X-Requested-With':'XMLHttpRequest'})
 
             branches = r['SubItems']
             if len(branches) > 0:
-              print(f"\n🏪🏪🏪 {r['BranchName']} CÓ {len(branches)} CỬA HÀNG {self.start_urls[0][:-1] + item['BranchUrl']}")
+              print(f"\n\t🏪{r['BranchName']} CÓ {len(branches)} CHI NHÁNH {self.start_urls[0][:-1] + item['BranchUrl']}")
 
               for br in branches:
                 subItem = FoodyItem()
@@ -409,21 +404,21 @@ class FoodySpider(scrapy.Spider):
 
                 # yield item
                 if subItem['DetailUrl']:
-                  print(self.start_urls[0][:-1] + subItem['DetailUrl'])
+                  print('\t\t' + self.start_urls[0][:-1] + subItem['DetailUrl'])
                 else:
-                  print(self.start_urls[0][:-1] + subItem['DetailUrl'])
+                  print('\t\t' + subItem['Name'])
 
                 yield scrapy.Request(url = 'https://www.foody.vn/__get/Restaurant/GetOpeningTime?resId=' + str(subItem['Id']),                  
                     callback=self.parse_opening_time, meta = {'data': subItem},  headers={'X-Requested-With':'XMLHttpRequest'})
-
+              print('')
           ###################### CHUYỂN TRANG  ######################
           self.p += 1
           location_name = self.provinces[self.province_id]['name']                                     
           service_name = self.service_names[self.service_id]  
 
 
-          self.checkpoint_file = open('checkpoint.txt', 'w')
-          self.checkpoint_file.write(f'PROVINCE: {self.province_id}\nSERVICE: {self.service_id}\nFILTER: {self.filter_id}\nPAGE: {self.p}')
+          self.checkpoint_file = open('checkpoint.txt', 'w', encoding="utf-8")
+          self.checkpoint_file.write(f'PROVINCE: {self.province_id}\nSERVICE: {self.service_id}\nFILTER: {self.filterPath}\nPAGE: {self.p}')
           self.checkpoint_file.close()
 
           print("\n")                                           
@@ -608,14 +603,16 @@ class FoodySpider(scrapy.Spider):
           # yield item
 
           if item['DetailUrl']:
-            print(self.start_urls[0][:-1] + item['DetailUrl'])
+            print('\t' + self.start_urls[0][:-1] + item['DetailUrl'])
+          else:
+            print( '\t' + item['Name'])
 
           yield scrapy.Request(url = 'https://www.foody.vn/__get/Restaurant/GetOpeningTime?resId=' + str(item['Id']),                  
                   callback=self.parse_opening_time, meta = {'data': item},  headers={'X-Requested-With':'XMLHttpRequest'})
 
           branches = r['SubItems']
           if len(branches) > 0:
-            print(f"\n🏪🏪🏪 {r['BranchName']} CÓ {len(branches)} CỬA HÀNG {self.start_urls[0][:-1] + item['BranchUrl']}")
+            print(f"\n\t🏪🏪🏪 {r['BranchName']} CÓ {len(branches)} CHI NHÁNH {self.start_urls[0][:-1] + item['BranchUrl']}")
             
             for br in branches:
               subItem = FoodyItem()
@@ -683,27 +680,27 @@ class FoodySpider(scrapy.Spider):
 
               # yield item
               if subItem['DetailUrl']:
-                print(self.start_urls[0][:-1] + subItem['DetailUrl'])
+                print('\t\t' + self.start_urls[0][:-1] + subItem['DetailUrl'])
               else:
-                print(self.start_urls[0][:-1] + subItem['DetailUrl'])
+                print('\t\t' + subItem['Name'])
 
               yield scrapy.Request(url = 'https://www.foody.vn/__get/Restaurant/GetOpeningTime?resId=' + str(subItem['Id']),                  
                   callback=self.parse_opening_time, meta = {'data': subItem},  headers={'X-Requested-With':'XMLHttpRequest'})
                
-
+            print('')
 
         ###################### CHUYỂN TRANG  ######################
         self.p += 1
         location_name = self.provinces[self.province_id]['name']                                     
         service_name = self.service_names[self.service_id]  
 
-        self.checkpoint_file = open('checkpoint.txt', 'w')
-        self.checkpoint_file.write(f'PROVINCE: {self.province_id}\nSERVICE: {self.service_id}\nFILTER: {self.filter_id}\nPAGE: {self.p}')
+        self.checkpoint_file = open('checkpoint.txt', 'w', encoding="utf-8")
+        self.checkpoint_file.write(f'PROVINCE: {self.province_id}\nSERVICE: {self.service_id}\nFILTER: {self.filterPath}\nPAGE: {self.p}')
         self.checkpoint_file.close()
 
         print("\n")                                                                                
         print(f'🥩PAGE: {self.p} 🍟PROVINCE: {location_name} ({self.province_id} / {len(self.provinces)}) 🍔SERVICE: {service_name} ({self.service_id} / {len(self.service_names)}) 🍙FILTER: {self.filterPath} ({self.filter_id} / {len(self.filters)})')
-        print(self.filter_url + f'&page={self.p}&append=True')
+        print(self.filter_url + f'&page={self.p}&append=True\n')
         yield scrapy.Request(url = self.filter_url + f'&page={self.p}&append=True',                  
                   callback=self.parse_filter, cookies={"floc": self.provinces[self.province_id]['id']})
 
@@ -799,7 +796,7 @@ class FoodySpider(scrapy.Spider):
   def parse_opening_time(self, response):
     item = response.meta.get('data')
 
-    # Get opening time
+    # GET OPENING TIME
     data = json.loads(response.body)
     item['OpeningTime'] = data['Items']
 
@@ -818,7 +815,7 @@ class FoodySpider(scrapy.Spider):
     item = response.meta.get('data')
     resId = item['Id']
 
-    print(self.start_urls[0][:-1] + item['DetailUrl'])
+    print('\t' + self.start_urls[0][:-1] + item['DetailUrl'])
 
     # Get reviews from json
     data = json.loads(response.body)

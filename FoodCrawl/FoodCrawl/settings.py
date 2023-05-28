@@ -96,4 +96,4 @@ FEED = 'json'
 MONGO_URI = 'mongodb+srv://npvu1510:Phanvu2001@cluster0.cd4eojq.mongodb.net/?retryWrites=true&w=majority'
 MONGO_DATABASE = 'foody'
 # COOKIES_ENABLED = True
-DOWNLOAD_DELAY = 0.5
+DOWNLOAD_DELAY = 0.15
