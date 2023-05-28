@@ -18,19 +18,27 @@ class FoodySpider(scrapy.Spider):
     'DOWNLOAD_DELAY': 0.15 # 0.5 seconds of delay
     }
   
-  
-  checkpoint = False
-  cp_province = 0
-  cp_service = 0
-  cp_filter = 0
-  cp_page = 1
-
+  loadCheckPoint = True
   checkpoint_file = None
 
   allReviews = {}
 
   # BẮT ĐẦU CRAWL
   def parse(self, response):
+    if self.loadCheckPoint:
+      checkPointData = []
+
+      with open('checkpoint.txt', 'r') as f:
+          sep = ': '
+          for line in f:
+            number = int(line.split(sep)[1])
+            checkPointData.append(number)
+      
+      self.cp_province = checkPointData[0]
+      self.cp_service = checkPointData[1]
+      self.cp_filter = checkPointData[2]
+      self.cp_page = checkPointData[3] - 1
+
     locations_url = 'https://www.foody.vn/__get/Common/GetPopupLocation'
     
     yield scrapy.Request(url = locations_url, 
@@ -56,7 +64,7 @@ class FoodySpider(scrapy.Spider):
                    for l in data['AllLocations'] if l["CountryName"] == "Vietnam"]
 
       ############## VISIT TẤT CẢ LOCATION ##############
-      if self.checkpoint:
+      if self.loadCheckPoint:
         self.province_id = self.cp_province
       else:
         self.province_id = 0
@@ -80,7 +88,7 @@ class FoodySpider(scrapy.Spider):
     self.service_hrefs = response_content.css('.menu-box li a[rel="nofollow"]::attr(href)').extract()
     self.service_names = response_content.css('.menu-box li a[rel="nofollow"] span:first-child::text').extract()
 
-    if self.checkpoint:
+    if self.loadCheckPoint:
       self.service_id = self.cp_service
     else:
       self.service_id = 0
@@ -141,7 +149,7 @@ class FoodySpider(scrapy.Spider):
             self.filters.append({'district': d, 'category': ca, 'cuisine': cu})
 
     
-    if self.checkpoint:
+    if self.loadCheckPoint:
       self.filter_id = self.cp_filter
     else:
       self.filter_id = 0
@@ -178,9 +186,9 @@ class FoodySpider(scrapy.Spider):
 
     self.filter_url = self.start_urls[0][:-1] + data['Url']
     
-    if self.checkpoint:
+    if self.loadCheckPoint:
       self.p = self.cp_page
-      self.checkpoint = False
+      self.loadCheckPoint = False
     else:
       self.p = 1
 
