@@ -31,9 +31,9 @@ class FoodcrawlPipeline:
 
 
     def process_item(self, item, spider):
-        found = self.db.locations.find_one({'slug': item['slug']})
+        found = self.db.locations.find_one({'Id': item['Id']})
         if found:
-            raise DropItem("🩻🩻🩻 Duplicate item found: %s" % item['slug'])  
+            raise DropItem("🩻🩻🩻 Duplicate item: %s" % item['DetailUrl'])  
         else:
             self.db.locations.insert_one(ItemAdapter(item).asdict())
             return item
