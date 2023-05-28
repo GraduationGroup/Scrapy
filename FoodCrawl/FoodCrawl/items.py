@@ -7,18 +7,9 @@ import scrapy
 
 
 class FoodyItem(scrapy.Item):
-    # # id
-    # slug = scrapy.Field()
-
-    # # define the fields for your item here like:
-    # name = scrapy.Field()
-    # district = scrapy.Field()
-
-    # latitude = scrapy.Field()
-    # longitude = scrapy.Field()
-
-    # rating = scrapy.Field()
-
+    createdAt = scrapy.Field()
+    domain = scrapy.Field()
+    
     Address = scrapy.Field()
     District = scrapy.Field()
     City = scrapy.Field()

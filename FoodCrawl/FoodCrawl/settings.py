@@ -94,6 +94,6 @@ REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 FEED_EXPORT_ENCODING = "utf-8"
 FEED = 'json'
 MONGO_URI = 'mongodb+srv://npvu1510:Phanvu2001@cluster0.cd4eojq.mongodb.net/?retryWrites=true&w=majority'
-MONGO_DATABASE = 'foody'
+MONGO_DATABASE = 'foody_v3'
 # COOKIES_ENABLED = True
 DOWNLOAD_DELAY = 0.15

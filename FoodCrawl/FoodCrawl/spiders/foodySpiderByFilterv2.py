@@ -23,7 +23,7 @@ class FoodySpider(scrapy.Spider):
   cp_province = 0
   cp_service = 0
   cp_filter = 6
-  cp_page = 1
+  cp_page = 57
 
   checkpoint_file = None
 
@@ -165,7 +165,7 @@ class FoodySpider(scrapy.Spider):
     
     if self.checkpoint:
       self.p = self.cp_page
-      self.checkpoint = False
+      
     else:
       self.p = 1
 
@@ -257,7 +257,7 @@ class FoodySpider(scrapy.Spider):
       # Không thêm chỉ gửi request
       elif len(self.filters[self.filter_id].keys()) == 4:
         self.restaurants = data['searchItems']
-
+        self.checkpoint = False
         ###################### PAGE CÓ DATA ######################
         if len(self.restaurants) != 0:
           ###################### THÔNG TIN CƠ BẢN CỦA RESTAURANT ######################
@@ -533,8 +533,8 @@ class FoodySpider(scrapy.Spider):
         # ReviewUrl & AlbumUrl
         # AvgRating & AvgRatingOriginal
         
-      
       ###################### PAGE CÓ DATA ######################
+      self.checkpoint = False
       if len(self.restaurants) != 0:
         ###################### THÔNG TIN CƠ BẢN CỦA RESTAURANT ######################
         for r in self.restaurants:
