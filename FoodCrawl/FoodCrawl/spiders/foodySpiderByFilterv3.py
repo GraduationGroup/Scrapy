@@ -28,16 +28,23 @@ class FoodySpider(scrapy.Spider):
     if self.loadCheckPoint:
       checkPointData = []
 
-      with open('checkpoint.txt', 'r') as f:
-          sep = ': '
-          for line in f:
-            number = int(line.split(sep)[1])
-            checkPointData.append(number)
-      
-      self.cp_province = checkPointData[0]
-      self.cp_service = checkPointData[1]
-      self.cp_filter = checkPointData[2]
-      self.cp_page = checkPointData[3] - 1
+      if os.path.exists('checkpoint.txt'):
+        with open('checkpoint.txt', 'r') as f:
+            sep = ': '
+            for line in f:
+              number = int(line.split(sep)[1])
+              checkPointData.append(number)
+
+        self.cp_province = checkPointData[0]
+        self.cp_service = checkPointData[1]
+        self.cp_filter = checkPointData[2]
+        self.cp_page = checkPointData[3] - 1
+
+      else:
+        self.cp_province = 0
+        self.cp_service = 0
+        self.cp_filter = 1000
+        self.cp_page = 1
 
     locations_url = 'https://www.foody.vn/__get/Common/GetPopupLocation'
     

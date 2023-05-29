@@ -93,7 +93,8 @@ REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 # TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 FEED = 'json'
-MONGO_URI = 'mongodb+srv://npvu1510:Phanvu2001@cluster0.cd4eojq.mongodb.net/?retryWrites=true&w=majority'
+# MONGO_URI = 'mongodb+srv://npvu1510:Phanvu2001@cluster0.cd4eojq.mongodb.net/?retryWrites=true&w=majority'
+MONGO_URI = 'mongodb+srv://doadmin:eLM41p3c9z6o5m28@db-mongodb-sgp1-01603-a73dc775.mongo.ondigitalocean.com/?tls=true&authSource=admin'
 MONGO_DATABASE = 'foody_v3'
 # COOKIES_ENABLED = True
 DOWNLOAD_DELAY = 0.15
